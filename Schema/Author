@@ -1,0 +1,17 @@
+const mongoose = require("mongoose");
+const Author= mongoose.Schema({
+    id:{
+        type:Number,
+        required:true,
+    },
+    name:{
+        type:String,
+        required:true,
+    },
+    books:{
+        type:[String],
+        required:true,
+    },
+})
+const AuthorModal= mongoose.model('Author',Author);
+module.exports= AuthorModal;

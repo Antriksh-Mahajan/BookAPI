@@ -1,0 +1,18 @@
+const mongoose = require("mongoose");
+const Publication= mongoose.Schema({
+    id:{
+        type:Number,
+        required:true,
+    },
+    name:{
+        type:String,
+        required:true,
+    },
+    book:{
+        type:[String],
+        required:true,
+    },
+})
+
+const PublicationModal= mongoose.model('Publication',Publication);
+module.exports= PublicationModal;

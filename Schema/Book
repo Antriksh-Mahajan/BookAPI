@@ -1,0 +1,35 @@
+const mongoose = require("mongoose");
+const Book= mongoose.Schema({
+    
+    ISBN:{
+        type:String,
+        required:true,
+    },
+    title:{
+        type:String,
+        required:true,
+    },
+    author:{
+        type:[Number],
+        required:true,
+    },
+    language:{
+        type:String,
+        required:true,
+    },
+    pubDate:{
+        type:String
+    },
+    numOfPage:{
+        type:Number
+    },
+    Category:{
+        type:[String]
+    },
+    Publication:{
+        type:Number
+    }
+})
+
+const BookModal= mongoose.model('book',Book);
+module.exports= BookModal;
