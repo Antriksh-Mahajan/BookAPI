@@ -1,12 +1,9 @@
-const express = require('express');
-const app = express();
-const  database  = require('./database');
-      
-// Importing Schema From Schema Folder 
-const Book= require('./Schema/Book');
-const Author= require('./Schema/Author');
-const Publication= require('./Schema/Publication');
+const express   = require('express');
+const app       = express();
+const database  = require('./database');
 const mongoose = require('mongoose');
+const book = require('./Schema/Book');
+const AuthorModal = require('./Schema/Author');
 
 
       // Connection of MongoDB Database
@@ -50,11 +47,9 @@ app.use(express.json());
     })
 
     // - to get book by specific book ID
-    app.get('/book/:bookID', (req, res) => {
-      const bookID = req.params.bookID;
-      
-      const getBook = database.Book.filter((book) => book.ISBN === bookID);
-      return res.json({ book: getBook[0] });
+    app.get('/book/:bookID', async(req, res) => {
+      const getSpecifiedBook = await book.findOne({ISBN:req.params.bookID});
+      return res.json({ book: getSpecifiedBook });
     });
 
     // to get a list of books based on category
@@ -68,7 +63,10 @@ app.use(express.json());
         return res.json({ error: 'Book with this category not found' });
       }  
       return res.json({ book: getCategory });
-      
+
+    
+
+
     })
 
   // - to get a list of books based on author 
@@ -92,25 +90,39 @@ app.use(express.json());
       const pub=req.params.PublicationID;
       console.log(pub);
       const data=database.Book.filter((book)=>book.publication.toString()===pub)
-       return res.json(data);
+       return res.json({publication : data});
       }
     )
     
         /*////////////////////////////////// POST Commands //////////////////////////////// */
     // to add new book 
-    app.post('/book/new',(req,res)=>{
-      console.log(req.body);
-      res.json("book added succesfully");
+    app.post('/book/new', async(req,res)=>{
+      
+      try {
+
+        const {newBook}= req.body;
+
+        await book.create(newBook);
+        return res.json({message:"Book added to the database"});
+
+      } catch (error) {
+        res.json({message:error.message});
+      }
     })
 
     // add new Author
-    app.post('/author/new',(req,res)=>{
+    app.post('/author/new', async(req,res)=>{
+      try {  
       const {newAuthor}=req.body;
       // restructuring of data 
       console.log(newAuthor);
-
-        database.Author.push(newAuthor);
-      res.json(database.Author);
+      await AuthorModal.create(newAuthor)
+      res.json({message: "Author added successful"});
+      
+      } 
+      catch (error) {
+              res.json({message:error.message});
+      }
     })
 
     // add new Publication
